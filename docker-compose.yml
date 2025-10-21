@@ -1,0 +1,27 @@
+version: "3.9"
+
+services:
+  gateway-app:
+    build: ./app
+    container_name: gateway-app
+    restart: unless-stopped
+    expose:
+      - "3000"
+
+  caddy:
+    image: caddy:2.8.4
+    container_name: caddy-gateway
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - caddy_data:/data
+      - caddy_config:/config
+    depends_on:
+      - gateway-app
+
+volumes:
+  caddy_data:
+  caddy_config:
